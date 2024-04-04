@@ -1,0 +1,175 @@
+INSERT
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <Center>
+                <form action="process.jsp">
+                First name: <input type="text" name="Firstname" value="" />
+                Last name: <input type="text" name="Lastname" value="" />
+                city: <input type="text" name="City" value="" />
+                Email: <input type="text" name="Email" value="" />
+                <input type="submit" value="Submit" />
+                </form>
+            </Center>
+        </div>
+    </body>
+</html>
+
+PROCESS.JSP
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <%@page import="java.io.*,java.util.*,java.sql.*" %>
+        <%
+            String fname = request.getParameter("Firstname");
+            String lname = request.getParameter("Lastname");
+            String city = request.getParameter("City");
+            String Email = request.getParameter("Email");
+           
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/omkar?useSSL=false","root","123456");
+                out.println("Done");
+
+                String sql= "Insert into Login values(?,?,?,?);";
+                PreparedStatement ps = con.prepareStatement(sql);
+                out.println("Hello");
+                
+                ps.setString(1,fname);
+                ps.setString(2,lname);
+                ps.setString(3,city);
+                ps.setString(4,Email);
+                ps.executeUpdate();
+                out.println("Done");
+            }
+            catch(Exception e){
+                out.println("Error"+e);
+            }
+        %> 
+    </body>
+</html>
+
+
+UPDATE
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <form action="Update.jsp">
+                Enter First name of the user whose data you have to alter: <input type="text" name="txtname" value="" /><br/>
+                Enter First name: <input type="text" name="txtfname" value="" /><br/>
+                Enter Last name: <input type="text" name="txtlname" value="" /><br/>
+                Enter City: <input type="text" name="txtcity" value="" /><br/>
+                Enter Email: <input type="text" name="txtemail" value="" /><br/>
+                <input type="submit" value="Update" />
+            </form>
+        </div>
+    </body>
+</html>
+
+UPDATE.JSP
+
+<%@page contentType="text/html" pageEncoding="UTF-8" import="java.sql.*"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <%  
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/omkar?useSSL=false&allowPublicKeyRetrieval=true","root","123456");
+                String sql ="Update Login set Firstname=?,Lastname=?,city=?,email=? where Firstname=?;";
+                PreparedStatement pst=con.prepareStatement(sql);
+                String name = request.getParameter("txtname");
+                String Fname = request.getParameter("txtfname");
+                String lname = request.getParameter("txtlname");
+                String city = request.getParameter("txtcity");
+                String email = request.getParameter("txtemail");
+                pst.setString(1,Fname);
+                pst.setString(2,lname);
+                pst.setString(3,city);
+                pst.setString(4,email);
+                pst.setString(5,name);
+
+                int i =pst.executeUpdate();
+                if(i>0){
+                out.println("Record Updated");
+                    }else{
+                    out.println("Update failed");
+                    }
+            }catch(Exception e){
+            out.println("Error"+e.getMessage());
+            }
+        %>
+    </body>
+</html>
+
+DELETE
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <form action="Delete.jsp">
+                Enter Firstname Whose record you wish to delete: <input type="text" name="txtfname" value="" /><br/>
+                <input type="submit" value="DELETE" />
+            </form>
+        </div>
+    </body>
+</html>
+
+DELETE.JSP
+
+<%@page contentType="text/html" pageEncoding="UTF-8" import="java.sql.*"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <body>
+         <%
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/omkar?useSSL=false&allowPublicKeyRetrieval=true","root","123456");
+                String sql = "Delete from Login where Firstname=?;";
+                String name = request.getParameter("txtfname");
+                PreparedStatement pst=con.prepareStatement(sql);
+                pst.setString(1,name);
+                int i = pst.executeUpdate();
+                if(i>0){
+                out.println("Record Deleted");
+                }
+                else{
+                out.println("Deletion Failed");
+                }
+            }catch(Exception e){
+                out.println("Error"+e.getMessage());
+            }
+        
+        %>
+    </body>
+</html>
